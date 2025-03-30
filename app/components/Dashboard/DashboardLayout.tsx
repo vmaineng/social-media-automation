@@ -18,7 +18,7 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold mb-4 text-lightBg text-darkBg">
           Dashboard
         </h1>
-        <div className="border p-4 rounded-lg bg-[#d8e194] hover:bg-[#97d8c9] transition">
+        <div className="border p-4 rounded-lg bg-light hover:bg-[#97d8c9] transition">
           {!inputActive ? (
             <p
               className="text-lightBg text-darkBg cursor-text"
@@ -35,7 +35,7 @@ const Dashboard = () => {
             </p>
           ) : (
             <textarea
-              className="w-full border p-2 rounded-md focus:outline-none bg-white text-black"
+              className="w-full border p-2 rounded-md focus:outline-none bg-[#d8e194] text-lightBg text-darkBg"
               rows={3}
               value={postText}
               onChange={(e) => setPostText(e.target.value)}
