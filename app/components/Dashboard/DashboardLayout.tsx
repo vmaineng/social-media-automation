@@ -13,13 +13,15 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#ff9794]">
-      <div className="max-w-2xl mx-auto p-4 bg-[#ff9794] rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-4 text-[#f3f2d8]">Dashboard</h1>
+    <div className="min-h-screen bg-lightBg">
+      <div className="max-w-2xl mx-auto p-4 bg-lightBg dark:bg-darkBg rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold mb-4 text-lightBg text-darkBg">
+          Dashboard
+        </h1>
         <div className="border p-4 rounded-lg bg-[#d8e194] hover:bg-[#97d8c9] transition">
           {!inputActive ? (
             <p
-              className="text-[#f3f2d8] cursor-text"
+              className="text-lightBg text-darkBg cursor-text"
               role="button"
               tabIndex={0}
               onClick={() => setInputActive(true)}

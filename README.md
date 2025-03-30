@@ -38,3 +38,18 @@ Make sure to deploy the output of `npm run build`
 ## Styling
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+
+## Project Goals
+
+### Learning Goals
+- Learn Python and Flask for backend development.
+- Gain experience working with APIs (e.g., Twitter API, Instagram API).
+- Understand how to deploy applications on cloud platforms to AWS.
+
+### Career Goals
+- Build a project that demonstrates my ability to automate workflows, which is relevant for roles in DevOps or software engineering.
+- Create a portfolio piece that showcases my coding skills and problem-solving abilities.
+
+### Impact Goals
+- Be able to scale for other users and small business to use to save time by automating their social media posting.
+- Share this project as an open-source tool so others can benefit from it.
