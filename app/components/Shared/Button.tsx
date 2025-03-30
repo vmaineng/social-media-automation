@@ -13,7 +13,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={`px-4 py-2 bg-blue-50 text white rounded-md hover:bg-blue-600 transition ${
+      className={`bg-[#ffd900] text-black px-4 py-2 rounded-md transition ${
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
       onClick={onClick}
