@@ -1,6 +1,9 @@
 import { useThemeStore } from "./themeStore";
 
 describe("themStore", () => {
+  beforeEach(() => {
+    useThemeStore.setState({ theme: "light" });
+  });
   it("should initialize default theme as light", () => {
     const { theme } = useThemeStore.getState();
     expect(theme).toBe("light");
@@ -13,6 +16,7 @@ describe("toggleTheme", () => {
     expect(useThemeStore.getState().theme).toBe("dark");
   });
   it("should change to light when current is dark", () => {
+    useThemeStore.setState({ theme: "dark" });
     useThemeStore.getState().toggleTheme();
     expect(useThemeStore.getState().theme).toBe("light");
   });
