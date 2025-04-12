@@ -1,6 +1,5 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import { Button } from "../Shared/Button";
-import { create_post } from "../../aws/create_post";
 
 interface CreatePostResponse {
   success: boolean;
@@ -46,7 +45,7 @@ const PostForm = () => {
     setSubmissionSuccess(false);
 
     const formData = new FormData();
-    formData.append("postText", postText);
+    formData.append("statusText", postText); // Changed to statusText
     if (image) {
       formData.append("image", image);
     }
@@ -55,16 +54,27 @@ const PostForm = () => {
     }
 
     try {
-      const response: CreatePostResponse = await createPost(formData);
-      if (response.success && response.postId) {
+      const response = await fetch("/api/createPost", {
+        // Use /api/createPost
+        method: "POST",
+        body: formData, // Send FormData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create post");
+      }
+
+      const data: CreatePostResponse = await response.json();
+      if (data.success && data.postId) {
         setSubmissionSuccess(true);
         setPostText("");
         setImage(null);
         setScheduledTime("");
         setInputActive(false);
       } else {
-        console.error("Failed to create post:", response.error);
-        setSubmissionError(response.error || "Something went wrong.");
+        console.error("Failed to create post:", data.error);
+        setSubmissionError(data.error || "Something went wrong.");
       }
     } catch (error: any) {
       console.error("Error submitting post:", error);
