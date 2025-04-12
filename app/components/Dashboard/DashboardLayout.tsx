@@ -20,12 +20,12 @@ const Dashboard = () => {
   const [image, setImage] = useState<File | null>(null);
   const [scheduledTime, setScheduledTime] = useState<string>("");
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
-  const handleSubmit = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    if (!postText.trim()) return;
-    console.log("Submitted Post:", postText);
-    setPostText("");
-    setInputActive(false);
+  const handleTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setPostText(event.target.value);
   };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -40,17 +40,51 @@ const Dashboard = () => {
     setScheduledTime(event.target.value);
   };
 
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setSubmissionError(null);
+    setSubmissionSuccess(false);
+
+    const formData = new FormData();
+    formData.append("postText", postText);
+    if (image) {
+      formData.append("image", image);
+    }
+    if (scheduledTime) {
+      formData.append("scheduledTime", scheduledTime);
+    }
+
+    try {
+      const response: CreatePostResponse = await createPost(formData);
+      if (response.success && response.postId) {
+        setSubmissionSuccess(true);
+        setPostText("");
+        setImage(null);
+        setScheduledTime("");
+        setInputActive(false);
+      } else {
+        console.error("Failed to create post:", response.error);
+        setSubmissionError(response.error || "Something went wrong.");
+      }
+    } catch (error: any) {
+      console.error("Error submitting post:", error);
+      setSubmissionError("Failed to submit post.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-lightBg">
-      <div className="max-w-2xl mx-auto p-4 bg-lightBg dark:bg-darkBg rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-4 text-lightBg text-darkBg">
-          Dashboard
-        </h1>
-        <div className="border p-4 rounded-lg bg-light hover:bg-[#97d8c9] transition">
-          {!inputActive ? (
-            <p
+    <form onSubmit={handleSubmit}>
+      <div className="min-h-screen bg-lightBg">
+        <div className="max-w-2xl mx-auto p-4 bg-lightBg dark:bg-darkBg rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold mb-4 text-lightBg text-darkBg">
+            Dashboard
+          </h1>
+          <div className="border p-4 rounded-lg bg-light hover:bg-[#97d8c9] transition">
+            <div
               className="text-lightBg text-darkBg cursor-text"
-              role="button"
               tabIndex={0}
               onClick={() => setInputActive(true)}
               onKeyDown={(e) => {
@@ -59,27 +93,55 @@ const Dashboard = () => {
                 }
               }}
             >
-              What&apos;s on your mind?
-            </p>
-          ) : (
-            <textarea
-              className="w-full border p-2 rounded-md focus:outline-none bg-[#d8e194] text-lightBg text-darkBg"
-              rows={3}
-              value={postText}
-              onChange={(e) => setPostText(e.target.value)}
-              placeholder="What's on your mind"
-            />
-          )}
-        </div>
-        {inputActive && (
-          <div className="flex justify-end mt-2">
-            <Button onClick={handleSubmit} disabled={!postText.trim()}>
-              Submit
-            </Button>
+              {!inputActive ? (
+                <p className="text-lightBg text-darkBg cursor-text">
+                  What&apos;s on your mind?
+                </p>
+              ) : (
+                <textarea
+                  className="w-full border p-2 rounded-md focus:outline-none bg-[#d8e194] text-lightBg text-darkBg"
+                  rows={3}
+                  value={postText}
+                  onChange={handleTextChange}
+                  placeholder="What's on your mind"
+                  autoFocus
+                />
+              )}
+            </div>
+            {inputActive && (
+              <div className="flex justify-end mt-2">
+                <div>
+                  <label
+                    htmlFor="scheduledTime"
+                    className="block text-sm font-medium text-lightBg text-darkBg"
+                  >
+                    Schedule:
+                  </label>
+                  <input
+                    type="datetime-local"
+                    id="scheduledTime"
+                    value={scheduledTime}
+                    onChange={handleScheduledTimeChange}
+                  />
+                </div>
+                <Button type="submit" disabled={!postText.trim()}>
+                  Submit
+                </Button>
+              </div>
+            )}
+
+            {submissionError && (
+              <p className="text-red-500 mt-2">{submissionError}</p>
+            )}
+            {submissionSuccess && (
+              <p className="text-green-500 mt-2">
+                Post submitted successfully!
+              </p>
+            )}
           </div>
-        )}
+        </div>
       </div>
-    </div>
+    </form>
   );
 };
 
