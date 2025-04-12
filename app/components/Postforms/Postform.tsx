@@ -55,9 +55,11 @@ const PostForm = () => {
 
     try {
       const response = await fetch("/api/createPost", {
-        // Use /api/createPost
         method: "POST",
-        body: formData, // Send FormData
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postText }),
       });
 
       if (!response.ok) {

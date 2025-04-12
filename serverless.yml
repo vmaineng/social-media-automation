@@ -23,7 +23,7 @@ provider:
 
 functions:
   createPost:
-    handler: src/handlers/create_post.lambda_handler
+    handler: backend/handlers/create_post.lambda_handler
     events:
       - http:
           path: /createPost
