@@ -56,10 +56,7 @@ const PostForm = () => {
     try {
       const response = await fetch("/api/createPost", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postText }),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -67,7 +64,13 @@ const PostForm = () => {
         throw new Error(errorData.error || "Failed to create post");
       }
 
-      const data: CreatePostResponse = await response.json();
+      let data: CreatePostResponse;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        throw new Error("Invalid JSON response from server.");
+      }
+
       if (data.success && data.postId) {
         setSubmissionSuccess(true);
         setPostText("");
