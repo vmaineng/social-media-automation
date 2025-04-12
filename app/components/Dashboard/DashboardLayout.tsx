@@ -1,15 +1,43 @@
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { Button } from "../Shared/Button";
+import { useNavigate } from "@remix-run/react";
+
+interface CreatePostResponse {
+  success: boolean;
+  postId?: string;
+  error?: string;
+}
+
+interface PostFormData {
+  statusText: string;
+  image: File | null;
+  scheduledTime: string;
+}
 
 const Dashboard = () => {
   const [inputActive, setInputActive] = useState(false);
-  const [postText, setPostText] = useState("");
+  const [postText, setPostText] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
+  const [scheduledTime, setScheduledTime] = useState<string>("");
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
+  const handleSubmit = (event: ChangeEvent<HTMLTextAreaElement>) => {
     if (!postText.trim()) return;
     console.log("Submitted Post:", postText);
     setPostText("");
     setInputActive(false);
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setImage(event.target.files[0]);
+    } else {
+      setImage(null);
+    }
+  };
+
+  const handleScheduledTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setScheduledTime(event.target.value);
   };
 
   return (
