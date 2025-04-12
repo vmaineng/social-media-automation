@@ -1,0 +1,47 @@
+service: social-media-api
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+          Resource: "arn:aws:dynamodb:us-east-1:*:table/Posts"  # Replace
+  environment:
+    POSTS_TABLE: "Posts"
+    X_CONSUMER_KEY: ${env:X_CONSUMER_KEY}
+    X_CONSUMER_SECRET: ${env:X_CONSUMER_SECRET}
+    X_ACCESS_TOKEN: ${env:X_ACCESS_TOKEN}
+    X_ACCESS_TOKEN_SECRET: ${env:X_ACCESS_TOKEN_SECRET}
+    BLUESKY_USER: ${env:BLUESKY_USER}
+    BLUESKYSKY_PASSWORD: ${env:BLUESKY_PASSWORD}
+
+functions:
+  createPost:
+    handler: src/handlers/create_post.lambda_handler
+    events:
+      - http:
+          path: /createPost
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    PostsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Posts
+        AttributeDefinitions:
+          - AttributeName: postId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: postId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
